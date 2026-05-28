@@ -1,0 +1,554 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap');
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#1a2b5e;
+    --navy-mid:#243575;
+    --teal:#3db8a0;
+    --teal-light:#e8f7f4;
+    --teal-mid:#b2e4da;
+    --gray-50:#f8f9fa;
+    --gray-100:#f1f3f5;
+    --gray-200:#e9ecef;
+    --gray-400:#adb5bd;
+    --gray-500:#868e96;
+    --gray-700:#495057;
+    --gray-900:#212529;
+    --red:#e03131;
+    --border:#dee2e6;
+    --radius:10px;
+    --shadow:0 2px 12px rgba(0,0,0,0.08);
+  }
+  body{font-family:'DM Sans',sans-serif;background:#f4f6fb;color:var(--gray-900);min-height:100vh;padding:0}
+
+  .page{max-width:640px;margin:0 auto;padding:2rem 1rem 3rem}
+
+  /* Header */
+  .brand-header{text-align:center;margin-bottom:2rem}
+  .brand-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+  .logo-img{height:80px;width:auto}
+  .brand-name{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);letter-spacing:-0.5px}
+  .brand-name span{font-family:'DM Sans',sans-serif;font-weight:400;font-size:18px;color:var(--gray-500)}
+  .brand-tag{font-size:12px;color:var(--teal);font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+  .form-headline{font-size:22px;font-weight:600;color:var(--navy);margin-bottom:4px}
+  .form-sub{font-size:14px;color:var(--gray-500);margin-bottom:0}
+
+  /* Progress */
+  .progress-bar{display:flex;align-items:center;gap:0;margin-bottom:2rem;position:relative}
+  .progress-bar::before{content:'';position:absolute;top:50%;left:0;right:0;height:2px;background:var(--gray-200);z-index:0;transform:translateY(-50%)}
+  .step-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--gray-200);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--gray-400);z-index:1;flex-shrink:0;transition:all .25s}
+  .step-dot.active{border-color:var(--teal);background:var(--teal);color:#fff}
+  .step-dot.done{border-color:var(--teal);background:var(--teal);color:#fff}
+  .step-dot.done::after{content:'✓'}
+  .step-dot.done span{display:none}
+  .step-line{flex:1;height:2px;background:var(--gray-200);z-index:0;transition:background .25s}
+  .step-line.done{background:var(--teal)}
+
+  /* Card */
+  .card{background:#fff;border-radius:14px;border:1px solid var(--border);box-shadow:var(--shadow);padding:2rem;margin-bottom:1rem}
+
+  /* Step label */
+  .step-label{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+  .step-title{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:1.5rem}
+
+  /* Form elements */
+  .field{margin-bottom:1.25rem}
+  .field label{display:block;font-size:13px;font-weight:500;color:var(--gray-700);margin-bottom:6px}
+  .field label .req{color:var(--red);margin-left:2px}
+  .field input,.field textarea,.field select{
+    width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius);
+    font-family:'DM Sans',sans-serif;font-size:14px;color:var(--gray-900);background:#fff;
+    transition:border-color .2s,box-shadow .2s;outline:none;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(61,184,160,0.12)}
+  .field textarea{resize:vertical;min-height:90px}
+  .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23868e96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+  .field-hint{font-size:12px;color:var(--gray-500);margin-top:4px}
+  .field-error{font-size:12px;color:var(--red);margin-top:4px;display:none}
+  .field.has-error input,.field.has-error textarea,.field.has-error select{border-color:var(--red)}
+  .field.has-error .field-error{display:block}
+
+  /* Row */
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+  /* Service grid */
+  .service-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+  .service-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:4px;background:#fff}
+  .service-card:hover{border-color:var(--teal-mid);background:var(--teal-light)}
+  .service-card.selected{border-color:var(--teal);background:var(--teal-light)}
+  .service-card .svc-icon{font-size:22px;line-height:1}
+  .service-card .svc-name{font-size:13px;font-weight:600;color:var(--navy)}
+  .service-card .svc-desc{font-size:11px;color:var(--gray-500);line-height:1.3}
+  .service-error{font-size:12px;color:var(--red);margin-top:-8px;margin-bottom:12px;display:none}
+
+  /* Photo upload */
+  .upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:#fafafa;position:relative}
+  .upload-zone:hover{border-color:var(--teal);background:var(--teal-light)}
+  .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .upload-icon{font-size:28px;margin-bottom:8px}
+  .upload-text{font-size:13px;font-weight:500;color:var(--navy)}
+  .upload-hint{font-size:12px;color:var(--gray-500);margin-top:4px}
+  .file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+  .file-item{display:flex;align-items:center;gap:8px;background:var(--gray-50);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--gray-700)}
+  .file-item .file-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .file-remove{cursor:pointer;color:var(--gray-400);font-size:14px;flex-shrink:0;padding:0 4px;line-height:1}
+  .file-remove:hover{color:var(--red)}
+
+  /* Urgency options */
+  .urgency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
+  .urgency-opt{border:1.5px solid var(--border);border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;font-size:12px;font-weight:500;color:var(--gray-700);transition:all .2s;background:#fff}
+  .urgency-opt:hover{border-color:var(--teal-mid);background:var(--teal-light)}
+  .urgency-opt.selected{border-color:var(--teal);background:var(--teal-light);color:var(--navy)}
+
+  /* Privacy */
+  .privacy-box{background:var(--gray-50);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+  .privacy-box h4{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .privacy-box p{font-size:11.5px;color:var(--gray-500);line-height:1.6;margin-bottom:6px}
+  .privacy-box p:last-child{margin-bottom:0}
+  .privacy-box a{color:var(--teal);text-decoration:none}
+  .privacy-check{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+  .privacy-check input[type=checkbox]{width:16px;height:16px;margin-top:2px;flex-shrink:0;accent-color:var(--teal);cursor:pointer}
+  .privacy-check-text{font-size:12px;color:var(--gray-700);line-height:1.5}
+  .privacy-check-text a{color:var(--teal);text-decoration:none}
+
+  /* Buttons */
+  .btn-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:1.5rem}
+  .btn{padding:11px 22px;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-primary:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,43,94,0.25)}
+  .btn-ghost{background:transparent;color:var(--gray-500);border:1.5px solid var(--border);padding:10px 18px}
+  .btn-ghost:hover{border-color:var(--gray-400);color:var(--gray-700)}
+  .btn-submit{background:linear-gradient(135deg,var(--teal),#2a9a82);color:#fff;padding:13px 28px;font-size:15px;border-radius:10px;box-shadow:0 4px 14px rgba(61,184,160,0.35)}
+  .btn-submit:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(61,184,160,0.45)}
+
+  /* Summary */
+  .summary-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--gray-100);font-size:13px}
+  .summary-row:last-child{border-bottom:none}
+  .summary-label{color:var(--gray-500);flex-shrink:0;width:140px}
+  .summary-value{color:var(--gray-900);font-weight:500;text-align:right;flex:1}
+
+  /* Success */
+  .success-card{text-align:center;padding:3rem 2rem}
+  .success-icon{width:64px;height:64px;background:var(--teal-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:28px}
+  .success-title{font-size:22px;font-weight:600;color:var(--navy);margin-bottom:8px}
+  .success-sub{font-size:14px;color:var(--gray-500);line-height:1.7;max-width:400px;margin:0 auto 1.5rem}
+  .email-note{background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:10px;padding:12px 16px;font-size:13px;color:#1a5c50;display:flex;align-items:center;gap:10px;text-align:left;max-width:400px;margin:0 auto}
+
+  /* Step 4 - contact fields */
+  .section-divider{border:none;border-top:1px solid var(--gray-200);margin:1.25rem 0}
+
+  @media(max-width:480px){
+    .service-grid{grid-template-columns:1fr}
+    .field-row{grid-template-columns:1fr}
+    .urgency-grid{grid-template-columns:1fr 1fr}
+    .page{padding:1rem 0.75rem 2rem}
+    .card{padding:1.5rem 1.25rem}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-header">
+    <div class="brand-logo">
+      <img src="bugdoll_logo-removebg-preview.png" class="logo-img" alt="Bugdoll GmbH Logo" onerror="this.style.display='none'"/>
+    </div>
+    <!-- <div class="brand-tag">Der etwas andere Malerbetrieb</div> -->
+    <div style="margin-top:1.25rem">
+      <div class="form-headline">Kostenlose Anfrage stellen</div>
+      <div class="form-sub">Beschreiben Sie Ihr Projekt – wir melden uns innerhalb von 24 Stunden.</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar" id="progressBar">
+    <div class="step-dot active" id="dot1"><span>1</span></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step-dot" id="dot2"><span>2</span></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step-dot" id="dot3"><span>3</span></div>
+    <div class="step-line" id="line3"></div>
+    <div class="step-dot" id="dot4"><span>4</span></div>
+  </div>
+
+  <!-- STEP 1: Service Selection -->
+  <div class="card" id="step1">
+    <div class="step-label">Schritt 1 von 4</div>
+    <div class="step-title">Welche Leistung benötigen Sie?</div>
+    <div class="service-grid" id="serviceGrid">
+      <div class="service-card" data-value="fassaden" onclick="selectService(this)">
+        <div class="svc-icon">🏠</div>
+        <div class="svc-name">Fassaden</div>
+        <div class="svc-desc">Außenanstrich & Fassadengestaltung</div>
+      </div>
+      <div class="service-card" data-value="wohnraeume" onclick="selectService(this)">
+        <div class="svc-icon">🛋️</div>
+        <div class="svc-name">Wohnräume</div>
+        <div class="svc-desc">Innengestaltung & Wohnraumsanierung</div>
+      </div>
+      <div class="service-card" data-value="geschaeftsraeume" onclick="selectService(this)">
+        <div class="svc-icon">🏢</div>
+        <div class="svc-name">Geschäftsräume</div>
+        <div class="svc-desc">Büros, Praxen & Gewerbeflächen</div>
+      </div>
+      <div class="service-card" data-value="wandgestaltung" onclick="selectService(this)">
+        <div class="svc-icon">🎨</div>
+        <div class="svc-name">Wandgestaltung</div>
+        <div class="svc-desc">Dekorative Wanddesigns & Muster</div>
+      </div>
+      <div class="service-card" data-value="bodenbelaege" onclick="selectService(this)">
+        <div class="svc-icon">📐</div>
+        <div class="svc-name">Bodenbeläge</div>
+        <div class="svc-desc">Parkett, Vinyl, Laminat & Teppich</div>
+      </div>
+      <div class="service-card" data-value="stuckarbeiten" onclick="selectService(this)">
+        <div class="svc-icon">🏛️</div>
+        <div class="svc-name">Stuckarbeiten</div>
+        <div class="svc-desc">Decken, Gesimse & Zierelemente</div>
+      </div>
+      <div class="service-card" data-value="waermedaemmung" onclick="selectService(this)">
+        <div class="svc-icon">🌡️</div>
+        <div class="svc-name">Wärmedämmung</div>
+        <div class="svc-desc">Fassaden-, Dach- & Kellerdämmung</div>
+      </div>
+      <div class="service-card" data-value="bausanierung" onclick="selectService(this)">
+        <div class="svc-icon">🔨</div>
+        <div class="svc-name">Bausanierung</div>
+        <div class="svc-desc">Komplettsanierung & Modernisierung</div>
+      </div>
+    </div>
+    <div class="service-error" id="serviceError">Bitte wählen Sie eine Leistung aus.</div>
+    <div class="btn-row" style="justify-content:flex-end">
+      <button class="btn btn-primary" onclick="goToStep(2)">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Project Details -->
+  <div class="card" id="step2" style="display:none">
+    <div class="step-label">Schritt 2 von 4</div>
+    <div class="step-title" id="step2Title">Projektdetails</div>
+
+    <!-- Dynamic fields injected here -->
+    <div id="dynamicFields"></div>
+
+    <div class="field">
+      <label>Wunschtermin / Zeitrahmen</label>
+      <div class="urgency-grid" id="urgencyGrid">
+        <div class="urgency-opt" data-value="dringend" onclick="selectUrgency(this)">⚡ Dringend<br><span style="font-weight:400;font-size:11px;color:#868e96">Innerhalb 2 Wochen</span></div>
+        <div class="urgency-opt" data-value="naechster_monat" onclick="selectUrgency(this)">📅 Nächster Monat<br><span style="font-weight:400;font-size:11px;color:#868e96">2–4 Wochen</span></div>
+        <div class="urgency-opt" data-value="flexibel" onclick="selectUrgency(this)">🗓️ Flexibel<br><span style="font-weight:400;font-size:11px;color:#868e96">Kein festes Datum</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Fotos hochladen <span style="font-weight:400;color:var(--gray-400)">(optional)</span></label>
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="photoInput" multiple accept="image/*,.pdf" onchange="handleFiles(this.files)"/>
+        <div class="upload-icon">📷</div>
+        <div class="upload-text">Fotos oder Dokumente hier ablegen</div>
+        <div class="upload-hint">JPG, PNG, PDF · max. 5 Dateien · je max. 10 MB</div>
+      </div>
+      <div class="file-list" id="fileList"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="goToStep(1)">← Zurück</button>
+      <button class="btn btn-primary" onclick="goToStep(3)">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Contact Details -->
+  <div class="card" id="step3" style="display:none">
+    <div class="step-label">Schritt 3 von 4</div>
+    <div class="step-title">Ihre Kontaktdaten</div>
+
+    <div class="field-row">
+      <div class="field" id="f-vorname">
+        <label>Vorname <span class="req">*</span></label>
+        <input type="text" id="vorname" placeholder="Max"/>
+        <div class="field-error">Bitte geben Sie Ihren Vornamen ein.</div>
+      </div>
+      <div class="field" id="f-nachname">
+        <label>Nachname <span class="req">*</span></label>
+        <input type="text" id="nachname" placeholder="Mustermann"/>
+        <div class="field-error">Bitte geben Sie Ihren Nachnamen ein.</div>
+      </div>
+    </div>
+
+    <div class="field" id="f-email">
+      <label>E-Mail-Adresse <span class="req">*</span></label>
+      <input type="email" id="email" placeholder="max@beispiel.de"/>
+      <div class="field-error">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
+    </div>
+
+    <div class="field">
+      <label>Telefonnummer <span style="font-weight:400;color:var(--gray-400)">(optional, für schnellere Rückmeldung)</span></label>
+      <input type="tel" id="telefon" placeholder="+49 228 ..."/>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <div class="field" id="f-adresse">
+      <label>Objektadresse <span class="req">*</span></label>
+      <input type="text" id="adresse" placeholder="Musterstraße 1, 53175 Bonn"/>
+      <div class="field-hint">Wo soll die Arbeit ausgeführt werden?</div>
+      <div class="field-error">Bitte geben Sie die Adresse des Objekts an.</div>
+    </div>
+
+    <div class="privacy-box">
+      <h4>🔒 Datenschutzhinweis</h4>
+      <p>Ihre Angaben werden ausschließlich zur Bearbeitung Ihrer Anfrage verwendet und nicht an Dritte weitergegeben. Die Daten werden gemäß der <strong>DSGVO</strong> verarbeitet und nach Abschluss der Anfrage gelöscht, sofern keine vertragliche Grundlage besteht.</p>
+      <p>Verantwortlicher: Bugdoll GmbH, Godesberger Str. 27, 53175 Bonn Bad Godesberg · <a href="mailto:info@bugdoll-gmbh.de">info@bugdoll-gmbh.de</a></p>
+    </div>
+
+    <label class="privacy-check" id="f-privacy">
+      <input type="checkbox" id="privacyCheck"/>
+      <span class="privacy-check-text">Ich habe den <a href="https://bugdoll-gmbh.de/datenschutz/index.html" target="_blank">Datenschutzhinweis</a> gelesen und bin damit einverstanden, dass meine Daten zur Bearbeitung dieser Anfrage verarbeitet werden. <span class="req">*</span></span>
+    </label>
+    <div class="field-error" id="privacyError" style="display:none;margin-top:6px">Bitte stimmen Sie dem Datenschutzhinweis zu.</div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="goToStep(2)">← Zurück</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Summary + Submit -->
+  <div class="card" id="step4" style="display:none">
+    <div class="step-label">Schritt 4 von 4</div>
+    <div class="step-title">Zusammenfassung & Absenden</div>
+
+    <div id="summaryContent"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="goToStep(3)">← Zurück</button>
+      <button class="btn btn-submit" onclick="submitForm()">📨 Anfrage absenden</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="card success-card" id="stepSuccess" style="display:none">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Anfrage erfolgreich gesendet!</div>
+    <div class="success-sub">Vielen Dank, <span id="successName"></span>! Wir haben Ihre Anfrage erhalten und melden uns <strong>innerhalb von 24 Stunden</strong> bei Ihnen.</div>
+    <div class="email-note">
+      <span style="font-size:20px">📧</span>
+      <span>In einer echten Integration würde Thorsten Kahlert jetzt automatisch eine strukturierte E-Mail mit allen Angaben erhalten — inklusive Fotos und Projektdetails.</span>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:1.5rem" onclick="resetForm()">Neue Anfrage stellen</button>
+  </div>
+
+</div>
+
+<script>
+let selectedService = null;
+let selectedUrgency = null;
+let uploadedFiles = [];
+
+const serviceLabels = {
+  fassaden:'Fassaden', wohnraeume:'Wohnräume', geschaeftsraeume:'Geschäftsräume',
+  wandgestaltung:'Wandgestaltung', bodenbelaege:'Bodenbeläge', stuckarbeiten:'Stuckarbeiten',
+  waermedaemmung:'Wärmedämmung', bausanierung:'Bausanierung'
+};
+const urgencyLabels = {dringend:'Dringend (innerhalb 2 Wochen)', naechster_monat:'Nächsten Monat', flexibel:'Flexibel'};
+
+const dynamicFieldDefs = {
+  fassaden:[
+    {id:'flaeche',label:'Fassadenfläche (ca. m²)',type:'number',placeholder:'z.B. 120',hint:'Schätzung reicht aus'},
+    {id:'beschreibung',label:'Was soll gemacht werden?',type:'textarea',placeholder:'z.B. Neuer Außenanstrich, Schimmelflecken entfernen, Farbkonzept gewünscht …'}
+  ],
+  wohnraeume:[
+    {id:'zimmer',label:'Welche Räume?',type:'text',placeholder:'z.B. Wohnzimmer, Schlafzimmer, Flur'},
+    {id:'qm',label:'Gesamtfläche (ca. m²)',type:'number',placeholder:'z.B. 60'},
+    {id:'beschreibung',label:'Was soll gemacht werden?',type:'textarea',placeholder:'z.B. Frischer Anstrich, Farbberatung gewünscht, Decke streichen …'}
+  ],
+  geschaeftsraeume:[
+    {id:'art',label:'Art der Gewerbefläche',type:'text',placeholder:'z.B. Büro, Praxis, Ladenlokal, Restaurant'},
+    {id:'qm',label:'Fläche (ca. m²)',type:'number',placeholder:'z.B. 200'},
+    {id:'beschreibung',label:'Was soll gemacht werden?',type:'textarea',placeholder:'z.B. Komplettrenovierung, neuer Bodenbelag, Wandgestaltung …'}
+  ],
+  wandgestaltung:[
+    {id:'wandflaeche',label:'Wandfläche (ca. m²)',type:'number',placeholder:'z.B. 30'},
+    {id:'beschreibung',label:'Gestaltungswunsch',type:'textarea',placeholder:'z.B. Tapete, Putzstruktur, Farbverlauf, bestimmter Stil …'}
+  ],
+  bodenbelaege:[
+    {id:'material',label:'Gewünschtes Material',type:'select',options:['Bitte wählen …','Parkett','Vinyl / Designbelag','Laminat','Teppich','Noch unsicher'],placeholder:''},
+    {id:'flaeche',label:'Fläche (ca. m²)',type:'number',placeholder:'z.B. 45'},
+    {id:'beschreibung',label:'Weitere Details',type:'textarea',placeholder:'z.B. Raum mit Fußbodenheizung, bestehender Belag muss entfernt werden …'}
+  ],
+  stuckarbeiten:[
+    {id:'art',label:'Art der Stuckarbeit',type:'text',placeholder:'z.B. Deckenstuck, Rosetten, Fassadenstuck, Restaurierung'},
+    {id:'beschreibung',label:'Beschreibung',type:'textarea',placeholder:'z.B. Vorhandener Stuck soll restauriert werden, ca. 4 Rosetten gewünscht …'}
+  ],
+  waermedaemmung:[
+    {id:'art',label:'Art der Dämmung',type:'select',options:['Bitte wählen …','Fassadendämmung (WDVS)','Dachbodendämmung','Kellerdämmung','Innendämmung','Noch unklar'],placeholder:''},
+    {id:'flaeche',label:'Fläche (ca. m²)',type:'number',placeholder:'z.B. 180'},
+    {id:'beschreibung',label:'Weitere Informationen',type:'textarea',placeholder:'z.B. Altbau Baujahr 1970, bereits Fördermittel beantragt …'}
+  ],
+  bausanierung:[
+    {id:'umfang',label:'Umfang der Sanierung',type:'select',options:['Bitte wählen …','Teilsanierung (einzelne Bereiche)','Komplettsanierung','Denkmalschutz-Objekt','Noch offen'],placeholder:''},
+    {id:'baujahr',label:'Baujahr des Gebäudes (ca.)',type:'number',placeholder:'z.B. 1965'},
+    {id:'beschreibung',label:'Beschreibung der Maßnahmen',type:'textarea',placeholder:'z.B. Feuchtigkeitsschäden im Keller, Fassade muss erneuert werden, neue Böden im OG …'}
+  ]
+};
+
+function selectService(el){
+  document.querySelectorAll('.service-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedService = el.dataset.value;
+  document.getElementById('serviceError').style.display='none';
+}
+
+function selectUrgency(el){
+  document.querySelectorAll('.urgency-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedUrgency = el.dataset.value;
+}
+
+function handleFiles(files){
+  const MAX=5;
+  for(let f of files){
+    if(uploadedFiles.length>=MAX) break;
+    if(!uploadedFiles.find(u=>u.name===f.name&&u.size===f.size)) uploadedFiles.push(f);
+  }
+  renderFileList();
+}
+
+function renderFileList(){
+  const el=document.getElementById('fileList');
+  el.innerHTML='';
+  uploadedFiles.forEach((f,i)=>{
+    const div=document.createElement('div');
+    div.className='file-item';
+    div.innerHTML=`<span style="font-size:16px">${f.type.includes('pdf')?'📄':'🖼️'}</span><span class="file-name">${f.name}</span><span style="color:var(--gray-400)">${(f.size/1024).toFixed(0)} KB</span><span class="file-remove" onclick="removeFile(${i})">✕</span>`;
+    el.appendChild(div);
+  });
+}
+
+function removeFile(i){uploadedFiles.splice(i,1);renderFileList();}
+
+function buildDynamicFields(){
+  const defs = dynamicFieldDefs[selectedService]||[];
+  const container=document.getElementById('dynamicFields');
+  container.innerHTML='';
+  defs.forEach(d=>{
+    const wrap=document.createElement('div');
+    wrap.className='field';
+    wrap.id='f-dyn-'+d.id;
+    if(d.type==='textarea'){
+      wrap.innerHTML=`<label>${d.label}</label><textarea id="dyn-${d.id}" placeholder="${d.placeholder||''}"></textarea>`;
+    } else if(d.type==='select'){
+      const opts=d.options.map((o,i)=>`<option value="${i===0?'':o}"${i===0?' disabled selected':''}>${o}</option>`).join('');
+      wrap.innerHTML=`<label>${d.label}</label><select id="dyn-${d.id}">${opts}</select>`;
+    } else {
+      wrap.innerHTML=`<label>${d.label}</label><input type="${d.type}" id="dyn-${d.id}" placeholder="${d.placeholder||''}"/>${d.hint?`<div class="field-hint">${d.hint}</div>`:''}`;
+    }
+    container.appendChild(wrap);
+  });
+  const titles={fassaden:'Fassadendetails',wohnraeume:'Raumdetails',geschaeftsraeume:'Details zur Gewerbefläche',wandgestaltung:'Wandgestaltungsdetails',bodenbelaege:'Bodenbelagsdetails',stuckarbeiten:'Details zur Stuckarbeit',waermedaemmung:'Dämmungsdetails',bausanierung:'Sanierungsdetails'};
+  document.getElementById('step2Title').textContent=titles[selectedService]||'Projektdetails';
+}
+
+function goToStep(n){
+  // Validate current
+  if(n===2){
+    if(!selectedService){document.getElementById('serviceError').style.display='block';return;}
+    buildDynamicFields();
+  }
+  if(n===4){
+    let ok=true;
+    const checks=[
+      ['vorname','f-vorname',v=>v.trim().length>0],
+      ['nachname','f-nachname',v=>v.trim().length>0],
+      ['email','f-email',v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)],
+      ['adresse','f-adresse',v=>v.trim().length>0],
+    ];
+    checks.forEach(([id,fid,fn])=>{
+      const el=document.getElementById(id);
+      const wrap=document.getElementById(fid);
+      if(!fn(el.value)){wrap.classList.add('has-error');ok=false;}
+      else wrap.classList.remove('has-error');
+    });
+    const priv=document.getElementById('privacyCheck');
+    const privErr=document.getElementById('privacyError');
+    if(!priv.checked){privErr.style.display='block';ok=false;}
+    else privErr.style.display='none';
+    if(!ok) return;
+    buildSummary();
+  }
+
+  for(let i=1;i<=4;i++) document.getElementById('step'+i).style.display='none';
+  document.getElementById('step'+n).style.display='block';
+  updateProgress(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgress(current){
+  for(let i=1;i<=4;i++){
+    const dot=document.getElementById('dot'+i);
+    dot.className='step-dot';
+    if(i<current){dot.classList.add('done');}
+    else if(i===current){dot.classList.add('active');dot.innerHTML='<span>'+i+'</span>';}
+    else{dot.innerHTML='<span>'+i+'</span>';}
+    if(i<4){
+      const line=document.getElementById('line'+i);
+      line.className='step-line'+(i<current?' done':'');
+    }
+  }
+}
+
+function buildSummary(){
+  const defs=dynamicFieldDefs[selectedService]||[];
+  let rows=`
+    <div class="summary-row"><div class="summary-label">Leistung</div><div class="summary-value">${serviceLabels[selectedService]||''}</div></div>`;
+  defs.forEach(d=>{
+    const el=document.getElementById('dyn-'+d.id);
+    const val=el?el.value:'';
+    if(val&&val!=='Bitte wählen …') rows+=`<div class="summary-row"><div class="summary-label">${d.label}</div><div class="summary-value">${val}</div></div>`;
+  });
+  if(selectedUrgency) rows+=`<div class="summary-row"><div class="summary-label">Zeitrahmen</div><div class="summary-value">${urgencyLabels[selectedUrgency]}</div></div>`;
+  if(uploadedFiles.length>0) rows+=`<div class="summary-row"><div class="summary-label">Fotos</div><div class="summary-value">${uploadedFiles.length} Datei(en)</div></div>`;
+  rows+=`<div class="summary-row"><div class="summary-label">Name</div><div class="summary-value">${document.getElementById('vorname').value} ${document.getElementById('nachname').value}</div></div>`;
+  rows+=`<div class="summary-row"><div class="summary-label">E-Mail</div><div class="summary-value">${document.getElementById('email').value}</div></div>`;
+  const tel=document.getElementById('telefon').value;
+  if(tel) rows+=`<div class="summary-row"><div class="summary-label">Telefon</div><div class="summary-value">${tel}</div></div>`;
+  rows+=`<div class="summary-row"><div class="summary-label">Objektadresse</div><div class="summary-value">${document.getElementById('adresse').value}</div></div>`;
+  document.getElementById('summaryContent').innerHTML=rows;
+}
+
+function submitForm(){
+  const name=document.getElementById('vorname').value;
+  document.getElementById('successName').textContent=name;
+  for(let i=1;i<=4;i++) document.getElementById('step'+i).style.display='none';
+  document.getElementById('stepSuccess').style.display='block';
+  document.getElementById('progressBar').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetForm(){
+  selectedService=null;selectedUrgency=null;uploadedFiles=[];
+  document.querySelectorAll('.service-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.urgency-opt').forEach(o=>o.classList.remove('selected'));
+  document.getElementById('fileList').innerHTML='';
+  document.getElementById('vorname').value='';
+  document.getElementById('nachname').value='';
+  document.getElementById('email').value='';
+  document.getElementById('telefon').value='';
+  document.getElementById('adresse').value='';
+  document.getElementById('privacyCheck').checked=false;
+  document.getElementById('stepSuccess').style.display='none';
+  document.getElementById('progressBar').style.display='flex';
+  document.getElementById('step1').style.display='block';
+  updateProgress(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

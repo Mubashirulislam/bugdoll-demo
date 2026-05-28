@@ -1,0 +1,626 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2b5e;--navy-mid:#243575;--navy-light:#e8ecf7;
+  --teal:#3db8a0;--teal-dark:#2a9a82;--teal-light:#e8f7f4;--teal-mid:#b2e4da;
+  --amber:#f59f00;--amber-light:#fff9db;
+  --gray-50:#f8f9fa;--gray-100:#f1f3f5;--gray-200:#e9ecef;
+  --gray-400:#adb5bd;--gray-500:#868e96;--gray-700:#495057;--gray-900:#212529;
+  --red:#e03131;--green:#2f9e44;--green-light:#ebfbee;
+  --border:#dee2e6;--radius:10px;--shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+body{font-family:'DM Sans',sans-serif;background:#f4f6fb;color:var(--gray-900);padding:0}
+.page{max-width:680px;margin:0 auto;padding:2rem 1rem 3rem}
+
+.brand-header{text-align:center;margin-bottom:2rem}
+.logo-img{height:80px;width:auto;margin-bottom:6px}
+.brand-tag{font-size:11px;color:var(--teal);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.1rem}
+.form-headline{font-size:22px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.form-sub{font-size:14px;color:var(--gray-500)}
+
+/* Service selector */
+.service-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
+.svc-tab{border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 8px;cursor:pointer;text-align:center;transition:all .18s;background:#fff}
+.svc-tab:hover{border-color:var(--teal-mid);background:var(--teal-light)}
+.svc-tab.active{border-color:var(--teal);background:var(--teal-light)}
+.svc-tab .t-icon{font-size:20px;margin-bottom:4px}
+.svc-tab .t-name{font-size:11px;font-weight:600;color:var(--navy);line-height:1.2}
+
+.card{background:#fff;border-radius:14px;border:1px solid var(--border);box-shadow:var(--shadow);padding:1.75rem;margin-bottom:1rem}
+
+/* Inputs */
+.field{margin-bottom:1.1rem}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--gray-700);margin-bottom:5px}
+.field input[type=number],.field select{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius);
+  font-family:'DM Sans',sans-serif;font-size:14px;color:var(--gray-900);background:#fff;
+  outline:none;transition:border-color .18s,box-shadow .18s;
+}
+.field input[type=number]:focus,.field select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(61,184,160,.12)}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23868e96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.field-hint{font-size:12px;color:var(--gray-400);margin-top:4px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Slider */
+.slider-wrap{position:relative;padding-bottom:4px}
+.slider-val{position:absolute;right:0;top:-22px;font-size:13px;font-weight:600;color:var(--teal-dark)}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;background:var(--gray-200);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--teal);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18);cursor:pointer}
+
+/* Condition pills */
+.pill-row{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;transition:all .18s;color:var(--gray-700);background:#fff;white-space:nowrap}
+.pill:hover{border-color:var(--teal-mid);background:var(--teal-light)}
+.pill.active{border-color:var(--teal);background:var(--teal-light);color:var(--navy)}
+
+/* Result panel */
+.result-panel{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:14px;padding:1.75rem;color:#fff;margin-bottom:1rem}
+.result-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:6px}
+.result-range{font-family:'DM Serif Display',serif;font-size:38px;color:#fff;letter-spacing:-1px;line-height:1}
+.result-note{font-size:12px;color:rgba(255,255,255,.5);margin-top:6px}
+.result-divider{border:none;border-top:1px solid rgba(255,255,255,.12);margin:1.25rem 0}
+
+/* Breakdown */
+.breakdown-grid{display:flex;flex-direction:column;gap:8px}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.breakdown-row .b-label{color:rgba(255,255,255,.7);display:flex;align-items:center;gap:6px}
+.breakdown-row .b-val{font-weight:600;color:#fff}
+.breakdown-bar-wrap{margin-top:4px;margin-bottom:4px}
+.breakdown-bar-bg{height:4px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden}
+.breakdown-bar-fill{height:4px;background:var(--teal);border-radius:2px;transition:width .5s ease}
+
+/* Disclaimer */
+.disclaimer{background:var(--amber-light);border:1px solid #ffe066;border-radius:10px;padding:.9rem 1rem;font-size:12px;color:#7b5800;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+
+/* CTA */
+.cta-section{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem}
+.btn{width:100%;padding:12px 16px;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-primary:hover{background:var(--teal-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(61,184,160,.35)}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:var(--navy);background:var(--navy-light)}
+
+/* Contact card */
+.contact-card{background:var(--gray-50);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;gap:14px;margin-top:.75rem}
+.contact-avatar{width:42px;height:42px;border-radius:50%;background:var(--navy-light);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:var(--navy);flex-shrink:0}
+.contact-info{flex:1}
+.contact-name{font-size:14px;font-weight:600;color:var(--navy)}
+.contact-role{font-size:12px;color:var(--gray-500)}
+.contact-links{display:flex;flex-direction:column;gap:3px;margin-top:4px}
+.contact-links a{font-size:12px;color:var(--teal-dark);text-decoration:none;display:flex;align-items:center;gap:5px}
+.contact-links a:hover{text-decoration:underline}
+
+/* Calc button */
+.calc-btn{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:.5rem}
+.calc-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,43,94,.25)}
+
+/* Hidden panels */
+.svc-panel{display:none}.svc-panel.active{display:block}
+.result-section{display:none}.result-section.visible{display:block}
+
+.section-title{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.badge{font-size:11px;padding:3px 9px;border-radius:12px;background:var(--teal-light);color:var(--teal-dark);font-weight:600}
+
+@media(max-width:520px){
+  .service-tabs{grid-template-columns:repeat(4,1fr);gap:6px}
+  .svc-tab{padding:10px 4px}
+  .svc-tab .t-name{font-size:10px}
+  .field-row{grid-template-columns:1fr}
+  .cta-section{grid-template-columns:1fr}
+  .result-range{font-size:30px}
+  .page{padding:1rem .75rem 2rem}
+  .card{padding:1.25rem}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="brand-header">
+  <img src="bugdoll_logo-removebg-preview.png" class="logo-img" alt="Bugdoll GmbH" onerror="this.style.display='none'"/>
+  <!-- <div class="brand-tag">Der etwas andere Malerbetrieb</div> -->
+  <div class="form-headline">Kostenrechner</div>
+  <div class="form-sub">Erhalten Sie sofort eine unverbindliche Kostenschätzung für Ihr Projekt.</div>
+</div>
+
+<!-- Service Tabs -->
+<div class="service-tabs">
+  <div class="svc-tab active" data-svc="boden" onclick="switchService('boden',this)"><div class="t-icon">📐</div><div class="t-name">Boden&shy;beläge</div></div>
+  <div class="svc-tab" data-svc="fassade" onclick="switchService('fassade',this)"><div class="t-icon">🏠</div><div class="t-name">Fassaden</div></div>
+  <div class="svc-tab" data-svc="innen" onclick="switchService('innen',this)"><div class="t-icon">🛋️</div><div class="t-name">Wohn&shy;räume</div></div>
+  <div class="svc-tab" data-svc="daemm" onclick="switchService('daemm',this)"><div class="t-icon">🌡️</div><div class="t-name">Wärme&shy;dämmung</div></div>
+  <div class="svc-tab" data-svc="san" onclick="switchService('san',this)"><div class="t-icon">🔨</div><div class="t-name">Bau&shy;sanierung</div></div>
+  <div class="svc-tab" data-svc="stuck" onclick="switchService('stuck',this)"><div class="t-icon">🏛️</div><div class="t-name">Stuck&shy;arbeiten</div></div>
+  <div class="svc-tab" data-svc="wand" onclick="switchService('wand',this)"><div class="t-icon">🎨</div><div class="t-name">Wand&shy;gestaltung</div></div>
+  <div class="svc-tab" data-svc="gesch" onclick="switchService('gesch',this)"><div class="t-icon">🏢</div><div class="t-name">Gewerbe</div></div>
+</div>
+
+<!-- BODENBELÄGE -->
+<div class="svc-panel active card" id="panel-boden">
+  <div class="section-title">📐 Bodenbeläge <span class="badge">Fläche & Material</span></div>
+  <div class="field">
+    <label>Fläche (m²)</label>
+    <div class="slider-wrap" style="margin-top:28px">
+      <span class="slider-val" id="boden-m2-val">40 m²</span>
+      <input type="range" min="5" max="300" value="40" step="5" oninput="updateSlider('boden-m2',this.value,'m²')"/>
+      <input type="hidden" id="boden-m2" value="40"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Material</label>
+    <select id="boden-mat">
+      <option value="vinyl">Vinyl / Designbelag</option>
+      <option value="laminat">Laminat</option>
+      <option value="parkett">Parkett (Echtholz)</option>
+      <option value="teppich">Teppichboden</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Untergrund vorbereitung</label>
+    <div class="pill-row" id="boden-grund">
+      <div class="pill active" data-val="nein" onclick="selectPill('boden-grund',this)">Nicht nötig</div>
+      <div class="pill" data-val="ja" onclick="selectPill('boden-grund',this)">Schleifen / Spachteln</div>
+      <div class="pill" data-val="abriss" onclick="selectPill('boden-grund',this)">Altbelag entfernen</div>
+    </div>
+  </div>
+  <button class="calc-btn" onclick="calculate('boden')">Kosten berechnen →</button>
+</div>
+
+<!-- FASSADE -->
+<div class="svc-panel card" id="panel-fassade">
+  <div class="section-title">🏠 Fassadenanstrich <span class="badge">Außenfläche</span></div>
+  <div class="field">
+    <label>Fassadenfläche (m²)</label>
+    <div class="slider-wrap" style="margin-top:28px">
+      <span class="slider-val" id="fassade-m2-val">120 m²</span>
+      <input type="range" min="20" max="600" value="120" step="10" oninput="updateSlider('fassade-m2',this.value,'m²')"/>
+      <input type="hidden" id="fassade-m2" value="120"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Fassadentyp</label>
+    <select id="fassade-typ">
+      <option value="putz">Glatter Putz</option>
+      <option value="rau">Rauer Putz / Strukturputz</option>
+      <option value="klinker">Klinker / Ziegel</option>
+      <option value="holz">Holzfassade</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Zustand der Fassade</label>
+    <div class="pill-row" id="fassade-cond">
+      <div class="pill active" data-val="gut" onclick="selectPill('fassade-cond',this)">Gut (Auffrischung)</div>
+      <div class="pill" data-val="mittel" onclick="selectPill('fassade-cond',this)">Mittelmäßig</div>
+      <div class="pill" data-val="schlecht" onclick="selectPill('fassade-cond',this)">Stark verwittert</div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Gerüst erforderlich?</label>
+    <div class="pill-row" id="fassade-gerust">
+      <div class="pill active" data-val="nein" onclick="selectPill('fassade-gerust',this)">Nein / EG</div>
+      <div class="pill" data-val="ja" onclick="selectPill('fassade-gerust',this)">Ja (ab 2. OG)</div>
+    </div>
+  </div>
+  <button class="calc-btn" onclick="calculate('fassade')">Kosten berechnen →</button>
+</div>
+
+<!-- WOHNRÄUME -->
+<div class="svc-panel card" id="panel-innen">
+  <div class="section-title">🛋️ Wohnraumgestaltung <span class="badge">Innenbereich</span></div>
+  <div class="field-row">
+    <div class="field">
+      <label>Anzahl Räume</label>
+      <input type="number" id="innen-raume" value="3" min="1" max="20" placeholder="3"/>
+    </div>
+    <div class="field">
+      <label>Ø Raumgröße (m²)</label>
+      <input type="number" id="innen-qm" value="20" min="5" max="100" placeholder="20"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Leistungsumfang</label>
+    <div class="pill-row" id="innen-scope">
+      <div class="pill active" data-val="wande" onclick="selectPill('innen-scope',this)">Nur Wände</div>
+      <div class="pill" data-val="decke" onclick="selectPill('innen-scope',this)">Wände + Decke</div>
+      <div class="pill" data-val="komplett" onclick="selectPill('innen-scope',this)">Komplett inkl. Türen</div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Qualität / Ausführung</label>
+    <select id="innen-qual">
+      <option value="standard">Standard (1–2 Anstriche)</option>
+      <option value="hochwertig">Hochwertig (3 Anstriche + Grundierung)</option>
+      <option value="design">Designanstrich / Spezialfarbe</option>
+    </select>
+  </div>
+  <button class="calc-btn" onclick="calculate('innen')">Kosten berechnen →</button>
+</div>
+
+<!-- WÄRMEDÄMMUNG -->
+<div class="svc-panel card" id="panel-daemm">
+  <div class="section-title">🌡️ Wärmedämmung <span class="badge">Energieeffizienz</span></div>
+  <div class="field">
+    <label>Dämmfläche (m²)</label>
+    <div class="slider-wrap" style="margin-top:28px">
+      <span class="slider-val" id="daemm-m2-val">150 m²</span>
+      <input type="range" min="20" max="800" value="150" step="10" oninput="updateSlider('daemm-m2',this.value,'m²')"/>
+      <input type="hidden" id="daemm-m2" value="150"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Dämmungsart</label>
+    <select id="daemm-typ">
+      <option value="wdvs">WDVS Fassade (EPS / Mineralwolle)</option>
+      <option value="dach">Dachbodendämmung</option>
+      <option value="keller">Kellerdämmung</option>
+      <option value="innen">Innendämmung</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Dämmstärke</label>
+    <div class="pill-row" id="daemm-starke">
+      <div class="pill active" data-val="10" onclick="selectPill('daemm-starke',this)">10 cm</div>
+      <div class="pill" data-val="14" onclick="selectPill('daemm-starke',this)">14 cm</div>
+      <div class="pill" data-val="18" onclick="selectPill('daemm-starke',this)">18 cm (KfW)</div>
+      <div class="pill" data-val="20" onclick="selectPill('daemm-starke',this)">20 cm+</div>
+    </div>
+  </div>
+  <button class="calc-btn" onclick="calculate('daemm')">Kosten berechnen →</button>
+</div>
+
+<!-- BAUSANIERUNG -->
+<div class="svc-panel card" id="panel-san">
+  <div class="section-title">🔨 Bausanierung <span class="badge">Umfangsbasiert</span></div>
+  <div class="field">
+    <label>Wohnfläche / Objektfläche (m²)</label>
+    <div class="slider-wrap" style="margin-top:28px">
+      <span class="slider-val" id="san-m2-val">100 m²</span>
+      <input type="range" min="20" max="500" value="100" step="10" oninput="updateSlider('san-m2',this.value,'m²')"/>
+      <input type="hidden" id="san-m2" value="100"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Sanierungsumfang</label>
+    <div class="pill-row" id="san-umfang">
+      <div class="pill active" data-val="teil" onclick="selectPill('san-umfang',this)">Teilsanierung</div>
+      <div class="pill" data-val="komplett" onclick="selectPill('san-umfang',this)">Komplettsanierung</div>
+      <div class="pill" data-val="denkmal" onclick="selectPill('san-umfang',this)">Denkmalschutz</div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Schwerpunkt</label>
+    <select id="san-focus">
+      <option value="fassade">Fassade &amp; Außen</option>
+      <option value="innen">Innenräume</option>
+      <option value="beides">Innen &amp; Außen</option>
+      <option value="feucht">Feuchtigkeitsschäden</option>
+    </select>
+  </div>
+  <button class="calc-btn" onclick="calculate('san')">Kosten berechnen →</button>
+</div>
+
+<!-- STUCKARBEITEN -->
+<div class="svc-panel card" id="panel-stuck">
+  <div class="section-title">🏛️ Stuckarbeiten <span class="badge">Zierelemente</span></div>
+  <div class="field">
+    <label>Art der Stuckarbeit</label>
+    <div class="pill-row" id="stuck-art">
+      <div class="pill active" data-val="rosetten" onclick="selectPill('stuck-art',this)">Rosetten</div>
+      <div class="pill" data-val="gesimse" onclick="selectPill('stuck-art',this)">Gesimse / Profile</div>
+      <div class="pill" data-val="restaur" onclick="selectPill('stuck-art',this)">Restaurierung</div>
+      <div class="pill" data-val="fassade" onclick="selectPill('stuck-art',this)">Fassadenstuck</div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Laufmeter / Anzahl Elemente</label>
+    <div class="slider-wrap" style="margin-top:28px">
+      <span class="slider-val" id="stuck-lm-val">20 lfm</span>
+      <input type="range" min="1" max="100" value="20" step="1" oninput="updateSlider('stuck-lm',this.value,'lfm')"/>
+      <input type="hidden" id="stuck-lm" value="20"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Ausführung</label>
+    <select id="stuck-qual">
+      <option value="standard">Standard-Stuck (vorgefertigt)</option>
+      <option value="massanf">Maßanfertigung</option>
+      <option value="historisch">Historisch / Denkmalgerecht</option>
+    </select>
+  </div>
+  <button class="calc-btn" onclick="calculate('stuck')">Kosten berechnen →</button>
+</div>
+
+<!-- WANDGESTALTUNG -->
+<div class="svc-panel card" id="panel-wand">
+  <div class="section-title">🎨 Wandgestaltung <span class="badge">Dekorativ</span></div>
+  <div class="field">
+    <label>Wandfläche (m²)</label>
+    <div class="slider-wrap" style="margin-top:28px">
+      <span class="slider-val" id="wand-m2-val">30 m²</span>
+      <input type="range" min="5" max="200" value="30" step="5" oninput="updateSlider('wand-m2',this.value,'m²')"/>
+      <input type="hidden" id="wand-m2" value="30"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Gestaltungstechnik</label>
+    <select id="wand-tech">
+      <option value="tapete">Tapete (Standard)</option>
+      <option value="tapete-design">Tapete (Design / Vliestapete)</option>
+      <option value="putz">Kreativputz / Spachtelputz</option>
+      <option value="muster">Musteranstrich / Schablone</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Untergrund</label>
+    <div class="pill-row" id="wand-grund">
+      <div class="pill active" data-val="gut" onclick="selectPill('wand-grund',this)">Gut (malerfähig)</div>
+      <div class="pill" data-val="vorbereitung" onclick="selectPill('wand-grund',this)">Vorbereitung nötig</div>
+      <div class="pill" data-val="renovier" onclick="selectPill('wand-grund',this)">Alte Tapete entfernen</div>
+    </div>
+  </div>
+  <button class="calc-btn" onclick="calculate('wand')">Kosten berechnen →</button>
+</div>
+
+<!-- GEWERBE -->
+<div class="svc-panel card" id="panel-gesch">
+  <div class="section-title">🏢 Geschäftsräume <span class="badge">Gewerblich</span></div>
+  <div class="field-row">
+    <div class="field">
+      <label>Fläche (m²)</label>
+      <input type="number" id="gesch-qm" value="150" min="20" max="2000" placeholder="150"/>
+    </div>
+    <div class="field">
+      <label>Art der Fläche</label>
+      <select id="gesch-art">
+        <option value="buro">Büro</option>
+        <option value="laden">Ladenlokal / Showroom</option>
+        <option value="praxis">Praxis / Kanzlei</option>
+        <option value="lager">Lager / Produktion</option>
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label>Maßnahmen</label>
+    <div class="pill-row" id="gesch-scope">
+      <div class="pill active" data-val="anstrich" onclick="selectPill('gesch-scope',this)">Anstrich</div>
+      <div class="pill" data-val="boden" onclick="selectPill('gesch-scope',this)">+ Boden</div>
+      <div class="pill" data-val="komplett" onclick="selectPill('gesch-scope',this)">Komplettrenovierung</div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Betriebsunterbrechung möglich?</label>
+    <div class="pill-row" id="gesch-timing">
+      <div class="pill active" data-val="normal" onclick="selectPill('gesch-timing',this)">Ja (Tages­arbeit)</div>
+      <div class="pill" data-val="nacht" onclick="selectPill('gesch-timing',this)">Nein (Nacht/WE +20%)</div>
+    </div>
+  </div>
+  <button class="calc-btn" onclick="calculate('gesch')">Kosten berechnen →</button>
+</div>
+
+<!-- RESULT SECTION -->
+<div class="result-section" id="resultSection">
+  <div class="result-panel">
+    <div class="result-label">Geschätzte Kosten (inkl. MwSt.)</div>
+    <div class="result-range" id="resultRange">—</div>
+    <div class="result-note" id="resultNote"></div>
+    <hr class="result-divider"/>
+    <div class="result-label" style="margin-bottom:10px">Kostenaufstellung</div>
+    <div class="breakdown-grid" id="breakdownGrid"></div>
+  </div>
+
+  <div class="disclaimer">
+    <span style="font-size:18px;flex-shrink:0">⚠️</span>
+    <span>Diese Schätzung basiert auf Durchschnittswerten für die Region Bonn/NRW (Stand 2025) und dient ausschließlich zur ersten Orientierung. Der tatsächliche Preis hängt von der konkreten Situation vor Ort ab. Eine verbindliche Kostenschätzung erhalten Sie nach kostenloser Besichtigung durch Herrn Kahlert.</span>
+  </div>
+
+  <div class="cta-section">
+    <button class="btn btn-primary" onclick="sendPrompt('I want to build the Bugdoll quote request form now')">📋 Kostenlose Anfrage stellen</button>
+    <a href="tel:+4922839189212" class="btn btn-outline">📞 Direkt anrufen</a>
+  </div>
+
+  <div class="contact-card">
+    <div class="contact-avatar">TK</div>
+    <div class="contact-info">
+      <div class="contact-name">Thorsten Kahlert</div>
+      <div class="contact-role">Geschäftsführer · Bugdoll GmbH</div>
+      <div class="contact-links">
+        <a href="tel:+4922839189212">📞 0228 / 391 892 12</a>
+        <a href="mailto:info@bugdoll-gmbh.de">✉️ info@bugdoll-gmbh.de</a>
+        <span style="font-size:11px;color:var(--gray-400);margin-top:2px">Mo–Fr · 07:00–17:00 Uhr · Godesberger Str. 27, Bonn</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:11px;color:var(--gray-400);line-height:1.6;margin-top:.75rem;padding:.75rem 1rem;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-200)">
+    <strong style="color:var(--gray-500)">Datenschutzhinweis:</strong> Dieser Kostenrechner verarbeitet keine personenbezogenen Daten. Es werden keine Eingaben gespeichert oder übermittelt. Verantwortlich: Bugdoll GmbH, Godesberger Str. 27, 53175 Bonn · <a href="https://bugdoll-gmbh.de/datenschutz/index.html" style="color:var(--teal-dark)">Datenschutzerklärung</a>
+  </div>
+</div>
+
+</div>
+<script>
+const activePills={};
+
+function switchService(svc,el){
+  document.querySelectorAll('.svc-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.svc-panel').forEach(p=>{p.classList.remove('active');p.style.display='none'});
+  el.classList.add('active');
+  const panel=document.getElementById('panel-'+svc);
+  panel.classList.add('active');panel.style.display='block';
+  document.getElementById('resultSection').classList.remove('visible');
+}
+// init first panel
+document.getElementById('panel-boden').style.display='block';
+
+function updateSlider(id,val,unit){
+  document.getElementById(id+'-val').textContent=val+' '+unit;
+  document.getElementById(id).value=val;
+}
+
+function selectPill(groupId,el){
+  const group=document.getElementById(groupId);
+  group.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  activePills[groupId]=el.dataset.val;
+}
+// init defaults
+['boden-grund','fassade-cond','fassade-gerust','innen-scope','daemm-starke','san-umfang','stuck-art','wand-grund','gesch-scope','gesch-timing'].forEach(id=>{
+  const group=document.getElementById(id);
+  if(group){const first=group.querySelector('.pill.active');if(first)activePills[id]=first.dataset.val;}
+});
+
+function fmt(n){return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n)}
+function fmtRange(lo,hi){return fmt(lo)+' – '+fmt(hi)}
+
+function renderBreakdown(items,total){
+  const grid=document.getElementById('breakdownGrid');
+  grid.innerHTML='';
+  items.forEach(item=>{
+    const pct=Math.round(item.val/total*100);
+    const row=document.createElement('div');
+    row.innerHTML=`
+      <div class="breakdown-row"><div class="b-label">${item.icon} ${item.label}</div><div class="b-val">${fmt(item.val)}</div></div>
+      <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar-fill" style="width:${pct}%"></div></div></div>`;
+    grid.appendChild(row);
+  });
+}
+
+function showResult(lo,hi,note,items){
+  document.getElementById('resultRange').textContent=fmtRange(lo,hi);
+  document.getElementById('resultNote').textContent=note;
+  const total=items.reduce((a,i)=>a+i.val,0);
+  renderBreakdown(items,total);
+  const sec=document.getElementById('resultSection');
+  sec.classList.add('visible');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function getPill(id){return activePills[id]||(document.getElementById(id)?.querySelector('.pill.active')?.dataset.val)||'';}
+
+function calculate(svc){
+  if(svc==='boden'){
+    const m2=+document.getElementById('boden-m2').value||40;
+    const mat=document.getElementById('boden-mat').value;
+    const grund=getPill('boden-grund');
+    const rates={vinyl:[28,38],laminat:[32,45],parkett:[55,90],teppich:[22,35]};
+    const r=rates[mat]||rates.vinyl;
+    let matCost=Math.round(m2*(r[0]+r[1])/2);
+    let arbeit=Math.round(m2*18);
+    let vorbereitung=grund==='ja'?Math.round(m2*8):grund==='abriss'?Math.round(m2*12):0;
+    const lo=Math.round((matCost+arbeit+vorbereitung)*0.9);
+    const hi=Math.round((matCost+arbeit+vorbereitung)*1.15);
+    const items=[{icon:'📦',label:'Material',val:matCost},{icon:'👷',label:'Verlege­arbeit',val:arbeit}];
+    if(vorbereitung) items.push({icon:'🔧',label:'Untergrund­vorbereitung',val:vorbereitung});
+    const matLabels={vinyl:'Vinyl/Designbelag',laminat:'Laminat',parkett:'Echtholzparkett',teppich:'Teppichboden'};
+    showResult(lo,hi,`Basis: ${m2} m² ${matLabels[mat]} inkl. Verlegung`,items);
+  }
+  else if(svc==='fassade'){
+    const m2=+document.getElementById('fassade-m2').value||120;
+    const typ=document.getElementById('fassade-typ').value;
+    const cond=getPill('fassade-cond');
+    const gerust=getPill('fassade-gerust');
+    const typRates={putz:1,rau:1.15,klinker:1.2,holz:1.3};
+    const condRates={gut:1,mittel:1.2,schlecht:1.45};
+    const base=m2*16*typRates[typ]*condRates[cond];
+    const mat=Math.round(m2*7*typRates[typ]);
+    const arbeit=Math.round(base-mat);
+    const gerustKost=gerust==='ja'?Math.round(m2*9):0;
+    const total=Math.round(base+gerustKost);
+    showResult(Math.round(total*0.9),Math.round(total*1.2),`${m2} m² Fassade · ${cond==='schlecht'?'inkl. Untergrundbehandlung':''}`,
+      [{icon:'🎨',label:'Farbe & Material',val:mat},{icon:'👷',label:'Streicharbeit',val:arbeit},...(gerustKost?[{icon:'🏗️',label:'Gerüst',val:gerustKost}]:[])]);
+  }
+  else if(svc==='innen'){
+    const raume=+document.getElementById('innen-raume').value||3;
+    const qm=+document.getElementById('innen-qm').value||20;
+    const scope=getPill('innen-scope');
+    const qual=document.getElementById('innen-qual').value;
+    const wandFl=raume*qm*2.5*0.7;
+    const deckeFl=scope!=='wande'?raume*qm:0;
+    const fl=wandFl+deckeFl;
+    const qualRate={standard:9,hochwertig:14,design:22}[qual]||9;
+    const scopeMult={wande:1,decke:1.25,komplett:1.45}[scope]||1;
+    const arbeit=Math.round(fl*qualRate*scopeMult);
+    const mat=Math.round(fl*4.5);
+    const total=arbeit+mat;
+    showResult(Math.round(total*0.88),Math.round(total*1.18),`${raume} Räume · ca. ${Math.round(fl)} m² Streichfläche`,
+      [{icon:'🎨',label:'Farbe & Materialien',val:mat},{icon:'👷',label:'Malerarbeit',val:arbeit}]);
+  }
+  else if(svc==='daemm'){
+    const m2=+document.getElementById('daemm-m2').value||150;
+    const typ=document.getElementById('daemm-typ').value;
+    const starke=+getPill('daemm-starke')||10;
+    const typBase={wdvs:55,dach:25,keller:30,innen:45}[typ]||45;
+    const starkeMult=starke<=10?1:starke<=14?1.12:starke<=18?1.25:1.38;
+    const base=m2*typBase*starkeMult;
+    const mat=Math.round(base*0.45);
+    const arbeit=Math.round(base*0.45);
+    const gerust=typ==='wdvs'&&m2>100?Math.round(m2*8):0;
+    const total=mat+arbeit+gerust;
+    showResult(Math.round(total*0.9),Math.round(total*1.2),`${m2} m² · ${starke} cm Dämmstärke`,
+      [{icon:'📦',label:'Dämmmaterial',val:mat},{icon:'👷',label:'Montage',val:arbeit},...(gerust?[{icon:'🏗️',label:'Gerüst',val:gerust}]:[])]);
+  }
+  else if(svc==='san'){
+    const m2=+document.getElementById('san-m2').value||100;
+    const umfang=getPill('san-umfang');
+    const focus=document.getElementById('san-focus').value;
+    const umfangRate={teil:85,komplett:165,denkmal:240}[umfang]||85;
+    const focusMult={fassade:0.85,innen:0.9,beides:1.15,feucht:1.3}[focus]||1;
+    const basis=m2*umfangRate*focusMult;
+    const handwerk=Math.round(basis*0.45);
+    const material=Math.round(basis*0.35);
+    const planung=Math.round(basis*0.1);
+    const sonstiges=Math.round(basis*0.1);
+    const total=handwerk+material+planung+sonstiges;
+    showResult(Math.round(total*0.85),Math.round(total*1.25),`${m2} m² · ${umfang==='denkmal'?'Denkmalschutz-Objekt':'Richtpreis inkl. Nebenkosten'}`,
+      [{icon:'👷',label:'Handwerksleistung',val:handwerk},{icon:'📦',label:'Material',val:material},{icon:'📋',label:'Planung & Koordination',val:planung},{icon:'🔧',label:'Sonstiges',val:sonstiges}]);
+  }
+  else if(svc==='stuck'){
+    const lm=+document.getElementById('stuck-lm').value||20;
+    const art=getPill('stuck-art');
+    const qual=document.getElementById('stuck-qual').value;
+    const artBase={rosetten:85,gesimse:55,restaur:120,fassade:70}[art]||65;
+    const qualMult={standard:1,massanf:1.6,historisch:2.2}[qual]||1;
+    const arbeit=Math.round(lm*artBase*qualMult);
+    const mat=Math.round(lm*25*qualMult);
+    const total=arbeit+mat;
+    showResult(Math.round(total*0.88),Math.round(total*1.2),`${lm} lfm/Elemente · ${qual==='historisch'?'denkmalgerecht':''}`,
+      [{icon:'🏛️',label:'Stuckarbeiten',val:arbeit},{icon:'📦',label:'Stuckmaterial',val:mat}]);
+  }
+  else if(svc==='wand'){
+    const m2=+document.getElementById('wand-m2').value||30;
+    const tech=document.getElementById('wand-tech').value;
+    const grund=getPill('wand-grund');
+    const techBase={tapete:18,tapete_design:28,'tapete-design':28,putz:35,muster:40}[tech]||20;
+    const grundAdd={gut:0,vorbereitung:m2*5,renovier:m2*8}[grund]||0;
+    const mat=Math.round(m2*(techBase*0.4));
+    const arbeit=Math.round(m2*(techBase*0.6));
+    const total=mat+arbeit+grundAdd;
+    showResult(Math.round(total*0.9),Math.round(total*1.18),`${m2} m² Wandgestaltung`,
+      [{icon:'🎨',label:'Material / Tapete',val:mat},{icon:'👷',label:'Verlegung / Anstrich',val:arbeit},...(grundAdd?[{icon:'🔧',label:'Untergrundvorbereitung',val:Math.round(grundAdd)}]:[])]);
+  }
+  else if(svc==='gesch'){
+    const qm=+document.getElementById('gesch-qm').value||150;
+    const art=document.getElementById('gesch-art').value;
+    const scope=getPill('gesch-scope');
+    const timing=getPill('gesch-timing');
+    const artMult={buro:1,laden:1.15,praxis:1.2,lager:0.85}[art]||1;
+    const scopeBase={anstrich:12,boden:35,komplett:68}[scope]||12;
+    const timingMult=timing==='nacht'?1.2:1;
+    const basis=qm*scopeBase*artMult*timingMult;
+    const anstrich=Math.round(basis*(scope==='komplett'?0.35:0.7));
+    const boden=scope!=='anstrich'?Math.round(basis*(scope==='boden'?0.6:0.4)):0;
+    const sonstiges=Math.round(basis*0.1);
+    const total=anstrich+(boden||0)+sonstiges;
+    showResult(Math.round(total*0.88),Math.round(total*1.2),`${qm} m² Gewerbefläche${timing==='nacht'?' · Nacht-/WE-Zuschlag':''}`,
+      [{icon:'🎨',label:'Anstrich & Gestaltung',val:anstrich},...(boden?[{icon:'📐',label:'Bodenarbeiten',val:boden}]:[]),{icon:'🔧',label:'Vorbereitung & Sonstiges',val:sonstiges}]);
+  }
+}
+</script>
+</body>
+</html>

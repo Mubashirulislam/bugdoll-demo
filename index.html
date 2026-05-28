@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Bugdoll GmbH – Demo-Tools</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2b5e;--navy-mid:#243575;--navy-light:#eef1f9;
+  --teal:#3db8a0;--teal-dark:#2a9a82;--teal-light:#e8f7f4;--teal-mid:#b2e4da;
+  --gray-50:#f8f9fa;--gray-100:#f1f3f5;--gray-200:#e9ecef;
+  --gray-400:#adb5bd;--gray-500:#868e96;--gray-700:#495057;--gray-900:#212529;
+  --border:#dee2e6;--radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+body{font-family:'DM Sans',sans-serif;background:#f0f2f8;color:var(--gray-900);min-height:100vh}
+
+/* Header */
+.header{background:#fff;border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:14px;height:64px}
+.logo-img{height:44px;width:auto}
+.header-title{font-size:16px;font-weight:600;color:var(--navy)}
+.header-sub{font-size:12px;color:var(--gray-500)}
+
+/* Hero */
+.hero{text-align:center;padding:3.5rem 1.5rem 2.5rem;max-width:640px;margin:0 auto}
+.hero-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.hero-title{font-family:'DM Serif Display',serif;font-size:38px;color:var(--navy);line-height:1.15;letter-spacing:-.5px;margin-bottom:14px}
+.hero-sub{font-size:15px;color:var(--gray-500);line-height:1.7;max-width:480px;margin:0 auto}
+
+/* Grid */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:960px;margin:0 auto;padding:0 1.5rem 4rem}
+
+/* Tool card */
+.tool-card{background:#fff;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all .2s}
+.tool-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.11);border-color:var(--teal-mid)}
+.card-top{padding:1.75rem 1.75rem 1.25rem;flex:1}
+.card-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:1.1rem;flex-shrink:0}
+.card-title{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--gray-500);line-height:1.65}
+.card-features{margin-top:1rem;display:flex;flex-direction:column;gap:6px}
+.feat{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-700)}
+.feat::before{content:'✓';font-weight:700;color:var(--teal);flex-shrink:0}
+.card-footer{padding:1.1rem 1.75rem;border-top:1px solid var(--gray-100);background:var(--gray-50);display:flex;align-items:center;justify-content:space-between}
+.card-cta{font-size:13px;font-weight:600;color:var(--teal-dark)}
+.card-arrow{font-size:16px;color:var(--teal);transition:transform .2s}
+.tool-card:hover .card-arrow{transform:translateX(4px)}
+
+/* Colors per card */
+.icon-teal{background:var(--teal-light);color:var(--teal-dark)}
+.icon-navy{background:var(--navy-light);color:var(--navy)}
+.icon-amber{background:#fff9db;color:#e67700}
+
+/* Footer */
+.footer{border-top:1px solid var(--border);background:#fff;padding:1.25rem 2rem;font-size:12px;color:var(--gray-400);text-align:center;line-height:1.7}
+.footer a{color:var(--teal-dark);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+
+@media(max-width:520px){
+  .hero-title{font-size:28px}
+  .tools-grid{grid-template-columns:1fr;padding:0 1rem 3rem}
+  .header{padding:0 1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="bugdoll_logo-removebg-preview.png" class="logo-img" alt="Bugdoll GmbH" onerror="this.style.display='none'"/>
+  <div>
+    <div class="header-title">Bugdoll GmbH</div>
+    <div class="header-sub">Demo-Tools · Bonn</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-label">Digitale Tools für Bugdoll</div>
+  <div class="hero-title">Drei Werkzeuge.<br>Ein Betrieb.</div>
+  <div class="hero-sub">Maßgeschneiderte Web-Tools für Thorsten Kahlert und sein Team – vom ersten Kundenkontakt bis zur Auftragsabwicklung.</div>
+</div>
+
+<div class="tools-grid">
+
+  <a class="tool-card" href="bugdoll_cost_estimator.html">
+    <div class="card-top">
+      <div class="card-icon icon-teal">📐</div>
+      <div class="card-title">Kostenrechner</div>
+      <div class="card-desc">Kunden erhalten sofort eine unverbindliche Kostenschätzung – für alle 8 Leistungsbereiche von Bodenbelägen bis zur Wärmedämmung.</div>
+      <div class="card-features">
+        <div class="feat">8 Leistungsbereiche wählbar</div>
+        <div class="feat">Detaillierte Kostenaufstellung</div>
+        <div class="feat">Preise für Region Bonn / NRW</div>
+        <div class="feat">Direkt zur Anfrage weiterleiten</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-cta">Tool öffnen</span>
+      <span class="card-arrow">→</span>
+    </div>
+  </a>
+
+  <a class="tool-card" href="bugdoll_job_tracker.html">
+    <div class="card-top">
+      <div class="card-icon icon-navy">⊞</div>
+      <div class="card-title">Auftragsübersicht</div>
+      <div class="card-desc">Alle laufenden Aufträge im Blick – als Kanban-Board oder Listenansicht, mit Statusverfolgung von der Anfrage bis zur Abrechnung.</div>
+      <div class="card-features">
+        <div class="feat">7 Projektstatus-Stufen</div>
+        <div class="feat">Kanban- und Listenansicht</div>
+        <div class="feat">Dringlichkeitskennzeichnung</div>
+        <div class="feat">Lokale Datenspeicherung (DSGVO)</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-cta">Tool öffnen</span>
+      <span class="card-arrow">→</span>
+    </div>
+  </a>
+
+  <a class="tool-card" href="bugdoll_quote_form.html">
+    <div class="card-top">
+      <div class="card-icon icon-amber">📋</div>
+      <div class="card-title">Angebotsformular</div>
+      <div class="card-desc">Geführtes 4-Schritte-Formular für Kundenanfragen – mit Leistungsauswahl, Projektdetails, Foto-Upload und DSGVO-konformer Einwilligung.</div>
+      <div class="card-features">
+        <div class="feat">4-Schritte-Prozess</div>
+        <div class="feat">Dynamische Felder je Leistung</div>
+        <div class="feat">Foto- und Dokument-Upload</div>
+        <div class="feat">DSGVO-konformes Zustimmungsfeld</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-cta">Tool öffnen</span>
+      <span class="card-arrow">→</span>
+    </div>
+  </a>
+
+</div>
+
+<div class="footer">
+  Bugdoll GmbH · Godesberger Str. 27, 53175 Bonn · <a href="tel:+4922839189212">0228 / 391 892 12</a> · <a href="mailto:info@bugdoll-gmbh.de">info@bugdoll-gmbh.de</a><br>
+  <a href="https://bugdoll-gmbh.de/datenschutz/index.html">Datenschutzerklärung</a>
+</div>
+
+</body>
+</html>

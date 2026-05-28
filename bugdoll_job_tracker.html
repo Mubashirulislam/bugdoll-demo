@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2b5e;--navy-mid:#243575;--navy-light:#eef1f9;
+  --teal:#3db8a0;--teal-dark:#2a9a82;--teal-light:#e8f7f4;--teal-mid:#b2e4da;
+  --gray-50:#f8f9fa;--gray-100:#f1f3f5;--gray-200:#e9ecef;
+  --gray-400:#adb5bd;--gray-500:#868e96;--gray-600:#6c757d;--gray-700:#495057;--gray-900:#212529;
+  --border:#dee2e6;--radius:10px;--shadow:0 2px 8px rgba(0,0,0,0.07);
+  --red:#e03131;--red-light:#fff5f5;--amber:#f59f00;--amber-light:#fff9db;
+  --green:#2f9e44;--green-light:#ebfbee;--blue:#1971c2;--blue-light:#e7f5ff;
+  --purple:#7048e8;--purple-light:#f3f0ff;
+}
+body{font-family:'DM Sans',sans-serif;background:#f0f2f8;color:var(--gray-900);min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 1.25rem;display:flex;align-items:center;gap:12px;height:56px;position:sticky;top:0;z-index:100}
+.logo-img{height:48px;width:auto}
+.topbar-title{font-size:15px;font-weight:600;color:var(--navy);white-space:nowrap}
+.topbar-sub{font-size:12px;color:var(--gray-500);white-space:nowrap}
+.topbar-sep{flex:1}
+.view-toggle{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
+.vt-btn{padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:#fff;color:var(--gray-500);font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;gap:5px}
+.vt-btn.active{background:var(--navy);color:#fff}
+.btn-add{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;white-space:nowrap}
+.btn-add:hover{background:var(--teal-dark)}
+
+/* ── STATS BAR ── */
+.stats-bar{display:flex;gap:10px;padding:12px 1.25rem;overflow-x:auto;background:#f0f2f8}
+.stat-chip{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:8px;white-space:nowrap;flex-shrink:0}
+.stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.stat-label{font-size:12px;color:var(--gray-500)}
+.stat-val{font-size:13px;font-weight:600;color:var(--gray-900)}
+
+/* ── KANBAN ── */
+.kanban-wrap{padding:1rem 1.25rem;overflow-x:auto;min-height:calc(100vh - 130px)}
+.kanban-board{display:flex;gap:12px;min-width:max-content;align-items:flex-start}
+.kanban-col{width:230px;flex-shrink:0}
+.col-header{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px 8px 0 0;margin-bottom:0}
+.col-title{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.col-count{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px}
+.col-body{background:var(--gray-100);border-radius:0 0 10px 10px;padding:8px;min-height:200px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--border);border-top:none}
+
+/* ── JOB CARD ── */
+.job-card{background:#fff;border-radius:8px;border:1px solid var(--border);padding:10px 11px;cursor:pointer;transition:all .18s;position:relative}
+.job-card:hover{border-color:var(--teal-mid);box-shadow:0 2px 10px rgba(61,184,160,.15);transform:translateY(-1px)}
+.jc-service-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;display:inline-block;margin-bottom:5px}
+.jc-name{font-size:13px;font-weight:600;color:var(--gray-900);margin-bottom:2px}
+.jc-addr{font-size:11px;color:var(--gray-500);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jc-meta{display:flex;justify-content:space-between;align-items:center}
+.jc-date{font-size:11px;color:var(--gray-400);display:flex;align-items:center;gap:3px}
+.jc-value{font-size:12px;font-weight:600;color:var(--navy)}
+.jc-urgent{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+
+/* ── LIST VIEW ── */
+.list-wrap{padding:1rem 1.25rem}
+.list-table{width:100%;background:#fff;border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)}
+.list-table table{width:100%;border-collapse:collapse}
+.list-table th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-500);padding:10px 14px;background:var(--gray-50);border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.list-table td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+.list-table tr:last-child td{border-bottom:none}
+.list-table tr:hover td{background:var(--gray-50);cursor:pointer}
+.stage-pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:10px;white-space:nowrap;display:inline-block}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-header{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.modal-title{font-size:16px;font-weight:600;color:var(--navy)}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray-400);padding:0 4px;line-height:1}
+.modal-close:hover{color:var(--gray-900)}
+.modal-body{padding:1.25rem 1.5rem}
+.modal-section{margin-bottom:1.25rem}
+.modal-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-500);margin-bottom:10px}
+.mf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mf{margin-bottom:.9rem}
+.mf label{display:block;font-size:12px;font-weight:500;color:var(--gray-700);margin-bottom:4px}
+.mf input,.mf select,.mf textarea{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--gray-900);outline:none;transition:border-color .15s}
+.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(61,184,160,.1)}
+.mf select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23868e96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.mf textarea{resize:vertical;min-height:70px}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;position:sticky;bottom:0;background:#fff}
+.btn-save{padding:9px 20px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-save:hover{background:var(--navy-mid)}
+.btn-cancel{padding:9px 16px;background:#fff;color:var(--gray-600);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-cancel:hover{border-color:var(--gray-400)}
+.btn-delete{padding:9px 14px;background:var(--red-light);color:var(--red);border:1.5px solid #ffc9c9;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-delete:hover{background:#ffe3e3}
+
+/* Stage move buttons */
+.stage-move-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.stage-move-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--gray-700);font-family:'DM Sans',sans-serif;transition:all .15s}
+.stage-move-btn:hover{background:var(--navy-light);border-color:var(--navy);color:var(--navy)}
+.stage-move-btn.current{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* Privacy notice */
+.privacy-note{background:var(--gray-50);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;font-size:11.5px;color:var(--gray-500);line-height:1.6;margin:1rem 1.25rem}
+.privacy-note a{color:var(--teal-dark);text-decoration:none}
+
+/* Empty state */
+.empty-col{text-align:center;padding:24px 12px;font-size:12px;color:var(--gray-400)}
+
+/* Stage colors */
+.s-anfrage{--sc:#e7f5ff;--sb:#a5d8ff;--st:#1971c2}
+.s-besichtigung{--sc:#fff9db;--sb:#ffec99;--st:#e67700}
+.s-angebot{--sc:#f3f0ff;--sb:#d0bfff;--st:#7048e8}
+.s-auftrag{--sc:#e8f7f4;--sb:#b2e4da;--st:#2a9a82}
+.s-abrechnung{--sc:#fff0f6;--sb:#fcc2d7;--st:#c2255c}
+.s-abgeschlossen{--sc:#ebfbee;--sb:#b2f2bb;--st:#2f9e44}
+.s-archiv{--sc:var(--gray-100);--sb:var(--gray-200);--st:var(--gray-500)}
+
+[class*="s-"] .col-header{background:var(--sc)}
+[class*="s-"] .col-title{color:var(--st)}
+[class*="s-"] .col-count{background:var(--sb);color:var(--st)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <img src="bugdoll_logo-removebg-preview.png" class="logo-img" alt="Bugdoll" onerror="this.style.display='none'"/>
+  <div>
+    <div class="topbar-title">Auftragsübersicht</div>
+    <div class="topbar-sub">Bugdoll GmbH · Thorsten Kahlert</div>
+  </div>
+  <div class="topbar-sep"></div>
+  <div class="view-toggle">
+    <button class="vt-btn active" id="btnKanban" onclick="setView('kanban')">⊞ Kanban</button>
+    <button class="vt-btn" id="btnList" onclick="setView('list')">≡ Liste</button>
+  </div>
+  <button class="btn-add" onclick="openModal(null)">+ Neuer Auftrag</button>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar" id="statsBar"></div>
+
+<!-- KANBAN VIEW -->
+<div id="kanbanView">
+  <div class="kanban-wrap">
+    <div class="kanban-board" id="kanbanBoard"></div>
+  </div>
+</div>
+
+<!-- LIST VIEW -->
+<div id="listView" style="display:none">
+  <div class="list-wrap">
+    <div class="list-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Kunde</th>
+            <th>Leistung</th>
+            <th>Adresse</th>
+            <th>Status</th>
+            <th>Termin</th>
+            <th>Wert</th>
+          </tr>
+        </thead>
+        <tbody id="listBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY NOTICE -->
+<div class="privacy-note">
+  🔒 <strong>Datenschutzhinweis:</strong> Alle hier eingetragenen Auftragsdaten werden ausschließlich lokal in Ihrem Browser gespeichert (localStorage) und nicht an Dritte übermittelt. Verantwortlicher: Bugdoll GmbH, Godesberger Str. 27, 53175 Bonn · <a href="https://bugdoll-gmbh.de/datenschutz/index.html" target="_blank">Datenschutzerklärung</a>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Neuer Auftrag</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="modal-section-title">📋 Status</div>
+        <div class="stage-move-row" id="stageMoveRow"></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">👤 Kundendaten</div>
+        <div class="mf-row">
+          <div class="mf"><label>Vorname</label><input id="f-vorname" placeholder="Max"/></div>
+          <div class="mf"><label>Nachname</label><input id="f-nachname" placeholder="Mustermann"/></div>
+        </div>
+        <div class="mf-row">
+          <div class="mf"><label>Telefon</label><input id="f-tel" placeholder="+49 228 …"/></div>
+          <div class="mf"><label>E-Mail</label><input id="f-email" type="email" placeholder="max@beispiel.de"/></div>
+        </div>
+        <div class="mf"><label>Objektadresse</label><input id="f-addr" placeholder="Musterstraße 1, 53175 Bonn"/></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">🔨 Auftrag</div>
+        <div class="mf-row">
+          <div class="mf"><label>Leistung</label>
+            <select id="f-service">
+              <option value="Fassaden">🏠 Fassaden</option>
+              <option value="Wohnräume">🛋️ Wohnräume</option>
+              <option value="Geschäftsräume">🏢 Geschäftsräume</option>
+              <option value="Wandgestaltung">🎨 Wandgestaltung</option>
+              <option value="Bodenbeläge">📐 Bodenbeläge</option>
+              <option value="Stuckarbeiten">🏛️ Stuckarbeiten</option>
+              <option value="Wärmedämmung">🌡️ Wärmedämmung</option>
+              <option value="Bausanierung">🔨 Bausanierung</option>
+            </select>
+          </div>
+          <div class="mf"><label>Auftragswert (€)</label><input id="f-value" type="number" placeholder="2500"/></div>
+        </div>
+        <div class="mf-row">
+          <div class="mf"><label>Termin / Startdatum</label><input id="f-date" type="date"/></div>
+          <div class="mf"><label>Dringend?</label>
+            <select id="f-urgent"><option value="nein">Nein</option><option value="ja">Ja ⚡</option></select>
+          </div>
+        </div>
+        <div class="mf"><label>Notizen</label><textarea id="f-notes" placeholder="z.B. Kunde wünscht Farbberatung, 3 Zimmer OG, Gerüst wird benötigt …"></textarea></div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <div style="display:flex;gap:8px">
+        <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+        <button class="btn-delete" id="btnDelete" style="display:none" onclick="deleteJob()">🗑 Löschen</button>
+      </div>
+      <button class="btn-save" onclick="saveJob()">💾 Speichern</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STAGES=[
+  {id:'anfrage',label:'Anfrage',cls:'s-anfrage'},
+  {id:'besichtigung',label:'Besichtigung',cls:'s-besichtigung'},
+  {id:'angebot',label:'Angebot',cls:'s-angebot'},
+  {id:'auftrag',label:'Auftrag',cls:'s-auftrag'},
+  {id:'abrechnung',label:'Abrechnung',cls:'s-abrechnung'},
+  {id:'abgeschlossen',label:'Abgeschlossen',cls:'s-abgeschlossen'},
+  {id:'archiv',label:'Archiv',cls:'s-archiv'},
+];
+
+const SERVICE_COLORS={
+  'Fassaden':'#e7f5ff:#1971c2',
+  'Wohnräume':'#f3f0ff:#7048e8',
+  'Geschäftsräume':'#fff0f6:#c2255c',
+  'Wandgestaltung':'#fff9db:#e67700',
+  'Bodenbeläge':'#e8f7f4:#2a9a82',
+  'Stuckarbeiten':'#f8f0fe:#9c36b5',
+  'Wärmedämmung':'#fff4e6:#d9480f',
+  'Bausanierung':'#ebfbee:#2f9e44',
+};
+
+function svcColors(svc){const c=(SERVICE_COLORS[svc]||'#f1f3f5:#495057').split(':');return{bg:c[0],col:c[1]};}
+
+// DEMO DATA
+let jobs=[
+  {id:1,stage:'anfrage',vorname:'Klaus',nachname:'Bergmann',tel:'0228 445566',email:'k.bergmann@web.de',addr:'Rüngsdorfer Str. 12, Bonn',service:'Fassaden',value:4200,date:'2025-06-10',urgent:'ja',notes:'Fassade stark verwittert, Gerüst nötig, ca. 180 m²'},
+  {id:2,stage:'besichtigung',vorname:'Monika',nachname:'Schulz',tel:'0162 3344556',email:'mschulz@gmail.com',addr:'Meckenheimer Allee 88, Bonn',service:'Wohnräume',value:1850,date:'2025-05-28',urgent:'nein',notes:'4 Zimmer + Flur, Farbkonzept gewünscht'},
+  {id:3,stage:'angebot',vorname:'Dr. Stefan',nachname:'Krause',tel:'0228 778899',email:'s.krause@praxis-krause.de',addr:'Godesberger Str. 55, Bonn',service:'Geschäftsräume',value:8600,date:'2025-06-02',urgent:'nein',notes:'Zahnarztpraxis, 220 m², Nachtarbeit erforderlich'},
+  {id:4,stage:'auftrag',vorname:'Petra',nachname:'Wolff',tel:'0176 9988776',email:'petra.wolff@t-online.de',addr:'Venusbergweg 7, Bonn',service:'Bodenbeläge',value:3100,date:'2025-05-22',urgent:'nein',notes:'Parkett 65 m² + Vinyl Bad, Altbelag entfernen'},
+  {id:5,stage:'auftrag',vorname:'Rainer',nachname:'Hoffmann',tel:'0228 112233',email:'r.hoffmann@gmx.de',addr:'Am Stadtwald 3, Bonn',service:'Wärmedämmung',value:12400,date:'2025-05-20',urgent:'ja',notes:'WDVS Fassade, Altbau 1972, KfW-Förderung beantragt'},
+  {id:6,stage:'abrechnung',vorname:'Familie',nachname:'Neumann',tel:'0228 556677',email:'neumann-bonn@web.de',addr:'Friesdorfer Str. 44, Bonn',service:'Bausanierung',value:19800,date:'2025-05-05',urgent:'nein',notes:'Komplettsanierung EG, abgeschlossen — Rechnung ausstehend'},
+  {id:7,stage:'abgeschlossen',vorname:'Ingrid',nachname:'Becker',tel:'0151 22334455',email:'i.becker@outlook.de',addr:'Hardtbergstr. 21, Bonn',service:'Stuckarbeiten',value:2200,date:'2025-04-18',urgent:'nein',notes:'Deckenstuck restauriert, sehr zufrieden — Bewertung erhalten ⭐⭐⭐⭐⭐'},
+  {id:8,stage:'archiv',vorname:'Thomas',nachname:'Müller',tel:'0228 334455',email:'t.mueller@web.de',addr:'Poppelsdorfer Allee 5, Bonn',service:'Wandgestaltung',value:950,date:'2025-03-10',urgent:'nein',notes:'Abgesagt — Budget zu knapp'},
+];
+let nextId=9;
+let editingId=null;
+let currentView='kanban';
+let currentStage='anfrage';
+
+function fmt(n){if(!n)return'—';return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);}
+function fmtDate(d){if(!d)return'—';const p=d.split('-');return`${p[2]}.${p[1]}.${p[0]}`;}
+
+function setView(v){
+  currentView=v;
+  document.getElementById('kanbanView').style.display=v==='kanban'?'block':'none';
+  document.getElementById('listView').style.display=v==='list'?'block':'none';
+  document.getElementById('btnKanban').classList.toggle('active',v==='kanban');
+  document.getElementById('btnList').classList.toggle('active',v==='list');
+  if(v==='list')renderList(); else renderKanban();
+}
+
+function renderStats(){
+  const bar=document.getElementById('statsBar');
+  const active=jobs.filter(j=>!['abgeschlossen','archiv'].includes(j.stage));
+  const totalVal=active.reduce((a,j)=>a+(+j.value||0),0);
+  const urgent=jobs.filter(j=>j.urgent==='ja'&&!['abgeschlossen','archiv'].includes(j.stage)).length;
+  bar.innerHTML=`
+    <div class="stat-chip"><div class="stat-dot" style="background:#1971c2"></div><span class="stat-label">Aktive Aufträge</span><span class="stat-val">${active.length}</span></div>
+    <div class="stat-chip"><div class="stat-dot" style="background:#2a9a82"></div><span class="stat-label">Aktiver Wert</span><span class="stat-val">${fmt(totalVal)}</span></div>
+    <div class="stat-chip"><div class="stat-dot" style="background:#e03131"></div><span class="stat-label">Dringend</span><span class="stat-val">${urgent}</span></div>
+    <div class="stat-chip"><div class="stat-dot" style="background:#2f9e44"></div><span class="stat-label">Abgeschlossen</span><span class="stat-val">${jobs.filter(j=>j.stage==='abgeschlossen').length}</span></div>
+    <div class="stat-chip"><div class="stat-dot" style="background:#7048e8"></div><span class="stat-label">Gesamt Aufträge</span><span class="stat-val">${jobs.length}</span></div>`;
+}
+
+function renderKanban(){
+  const board=document.getElementById('kanbanBoard');
+  board.innerHTML='';
+  STAGES.forEach(s=>{
+    const colJobs=jobs.filter(j=>j.stage===s.id);
+    const col=document.createElement('div');
+    col.className=`kanban-col ${s.cls}`;
+    const cards=colJobs.map(j=>{
+      const sc=svcColors(j.service);
+      return`<div class="job-card" onclick="openModal(${j.id})">
+        ${j.urgent==='ja'?'<div class="jc-urgent" title="Dringend"></div>':''}
+        <div class="jc-service-badge" style="background:${sc.bg};color:${sc.col}">${j.service}</div>
+        <div class="jc-name">${j.vorname} ${j.nachname}</div>
+        <div class="jc-addr">${j.addr||'—'}</div>
+        <div class="jc-meta">
+          <div class="jc-date">📅 ${fmtDate(j.date)}</div>
+          <div class="jc-value">${fmt(j.value)}</div>
+        </div>
+      </div>`;
+    }).join('');
+    col.innerHTML=`
+      <div class="col-header">
+        <div class="col-title">${s.label}</div>
+        <div class="col-count">${colJobs.length}</div>
+      </div>
+      <div class="col-body">${cards||'<div class="empty-col">Keine Aufträge</div>'}</div>`;
+    board.appendChild(col);
+  });
+}
+
+function renderList(){
+  const tbody=document.getElementById('listBody');
+  const sorted=[...jobs].sort((a,b)=>STAGES.findIndex(s=>s.id===a.stage)-STAGES.findIndex(s=>s.id===b.stage));
+  tbody.innerHTML=sorted.map(j=>{
+    const s=STAGES.find(x=>x.id===j.stage);
+    const sc=svcColors(j.service);
+    return`<tr onclick="openModal(${j.id})">
+      <td><strong>${j.vorname} ${j.nachname}</strong>${j.urgent==='ja'?' <span style="color:var(--red);font-size:11px">⚡</span>':''}<br><span style="font-size:11px;color:var(--gray-500)">${j.tel||''}</span></td>
+      <td><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:${sc.bg};color:${sc.col}">${j.service}</span></td>
+      <td style="font-size:12px;color:var(--gray-600);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${j.addr||'—'}</td>
+      <td><span class="stage-pill" style="background:var(--sc,#f1f3f5);">${s?s.label:'—'}</span></td>
+      <td style="font-size:12px;white-space:nowrap">${fmtDate(j.date)}</td>
+      <td style="font-weight:600;white-space:nowrap">${fmt(j.value)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Stage pill styles inline for list
+const STAGE_STYLES={
+  anfrage:'background:#e7f5ff;color:#1971c2',
+  besichtigung:'background:#fff9db;color:#e67700',
+  angebot:'background:#f3f0ff;color:#7048e8',
+  auftrag:'background:#e8f7f4;color:#2a9a82',
+  abrechnung:'background:#fff0f6;color:#c2255c',
+  abgeschlossen:'background:#ebfbee;color:#2f9e44',
+  archiv:'background:#f1f3f5;color:#495057',
+};
+
+function renderListFixed(){
+  const tbody=document.getElementById('listBody');
+  const sorted=[...jobs].sort((a,b)=>STAGES.findIndex(s=>s.id===a.stage)-STAGES.findIndex(s=>s.id===b.stage));
+  tbody.innerHTML=sorted.map(j=>{
+    const s=STAGES.find(x=>x.id===j.stage);
+    const sc=svcColors(j.service);
+    const ss=STAGE_STYLES[j.stage]||'background:#f1f3f5;color:#495057';
+    return`<tr onclick="openModal(${j.id})">
+      <td><strong>${j.vorname} ${j.nachname}</strong>${j.urgent==='ja'?' <span style="color:var(--red);font-size:11px">⚡</span>':''}<br><span style="font-size:11px;color:var(--gray-500)">${j.tel||''}</span></td>
+      <td><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;${sc.bg?'background:'+sc.bg+';color:'+sc.col:''}">${j.service}</span></td>
+      <td style="font-size:12px;color:var(--gray-600);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${j.addr||'—'}</td>
+      <td><span class="stage-pill" style="${ss}">${s?s.label:'—'}</span></td>
+      <td style="font-size:12px;white-space:nowrap">${fmtDate(j.date)}</td>
+      <td style="font-weight:600;white-space:nowrap">${fmt(j.value)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function openModal(id){
+  editingId=id;
+  const j=id?jobs.find(x=>x.id===id):null;
+  document.getElementById('modalTitle').textContent=j?`${j.vorname} ${j.nachname}`:'Neuer Auftrag';
+  document.getElementById('f-vorname').value=j?.vorname||'';
+  document.getElementById('f-nachname').value=j?.nachname||'';
+  document.getElementById('f-tel').value=j?.tel||'';
+  document.getElementById('f-email').value=j?.email||'';
+  document.getElementById('f-addr').value=j?.addr||'';
+  document.getElementById('f-service').value=j?.service||'Fassaden';
+  document.getElementById('f-value').value=j?.value||'';
+  document.getElementById('f-date').value=j?.date||'';
+  document.getElementById('f-urgent').value=j?.urgent||'nein';
+  document.getElementById('f-notes').value=j?.notes||'';
+  document.getElementById('btnDelete').style.display=j?'block':'none';
+  currentStage=j?.stage||'anfrage';
+  renderStageMoveRow(currentStage);
+  document.getElementById('modalOverlay').style.display='flex';
+}
+
+function renderStageMoveRow(active){
+  const row=document.getElementById('stageMoveRow');
+  row.innerHTML=STAGES.map(s=>`<button class="stage-move-btn${s.id===active?' current':''}" onclick="setModalStage('${s.id}')">${s.label}</button>`).join('');
+}
+
+function setModalStage(stageId){currentStage=stageId;renderStageMoveRow(stageId);}
+
+function saveJob(){
+  const data={
+    id:editingId||nextId++,
+    stage:currentStage,
+    vorname:document.getElementById('f-vorname').value.trim()||'Unbekannt',
+    nachname:document.getElementById('f-nachname').value.trim(),
+    tel:document.getElementById('f-tel').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    addr:document.getElementById('f-addr').value.trim(),
+    service:document.getElementById('f-service').value,
+    value:parseFloat(document.getElementById('f-value').value)||0,
+    date:document.getElementById('f-date').value,
+    urgent:document.getElementById('f-urgent').value,
+    notes:document.getElementById('f-notes').value.trim(),
+  };
+  if(editingId){const i=jobs.findIndex(j=>j.id===editingId);if(i>-1)jobs[i]=data;}
+  else jobs.push(data);
+  closeModal();refresh();
+}
+
+function deleteJob(){
+  if(!editingId)return;
+  jobs=jobs.filter(j=>j.id!==editingId);
+  closeModal();refresh();
+}
+
+function closeModal(){document.getElementById('modalOverlay').style.display='none';editingId=null;}
+function closeModalOutside(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+
+function refresh(){
+  renderStats();
+  if(currentView==='kanban')renderKanban();
+  else renderListFixed();
+}
+
+// Init
+refresh();
+</script>
+</body>
+</html>
